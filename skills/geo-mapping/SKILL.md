@@ -25,14 +25,32 @@ Create publication-quality scientific maps for geoscience papers, posters, prese
 - For non-map geoscience figures (time series plots, correlation matrices, architecture diagrams) use standard ARIS plotting skills
 - For generic geospatial analysis (not figure creation) use `/qgis-mcp`
 
+## Mapping Preferences (Set Once Per Project)
+
+Since ARIS is a long-running pipeline, cartographic preferences are asked **once** at the
+start of the project (or the first time a map is needed), then applied consistently to
+all maps in the session. The user can override on a specific map.
+
+**Ask the user at project start:**
+```
+Which map elements do you want by default?
+  ☐ Title (图名) — default ON
+  ☐ Scale bar (比例尺) — default ON
+  ☐ North arrow (指北针) — default ON (except global maps < 1:10M)
+  ☐ Legend (图例) — default ON
+  ☐ Neatline / map frame (图廓) — default ON
+  ☐ Signature & date — default ON
+  Font — Chinese: 宋体 (body) / 黑体 (titles); English: Times New Roman
+  Colour palette preference? (default: colour-blind safe)
+```
+
+Store the answers as session-level preferences and apply them to every map in this project.
+
 ## Constants
 
 - **MAP_DPI = 300** — minimum resolution for publication
 - **OUTPUT_DIR = "maps"** — maps are written to `maps/` in the current project
 - **VECTOR_FORMATS:** `.pdf` (vector, preferred for paper), `.png` (raster, for preview)
-- **MAP_SCALE_BAR = true** — include a scale bar on every map
-- **MAP_NORTH_ARROW = true** — include north arrow on every map
-- **MAP_LEGEND = true** — include a legend when the map uses symbology
 - **CRS_DECLARATION_REQUIRED = true** — every output map must declare its CRS
 
 ---
@@ -343,6 +361,57 @@ m.save("maps/interactive.html")
 
 ---
 
+## Cartographic Layout Standards
+
+Map layout follows the national cartographic standard
+([自然资源部 2021](https://www.gov.cn/zhengce/zhengceku/2021-04/07/content_5598163.htm),
+§2.5–2.6). Apply these defaults unless overridden by user preference or explicit instruction.
+
+### Layout Elements
+
+| Element | Specification | National Standard |
+|---|---|---|
+| **图廓 / Neatline (map frame)** | Outer = thick solid line; inner = thin solid line | §2.6.3 |
+| **图名 / Title** | Outside top of neatline; Chinese **黑体**, English/numbers **Times New Roman** | §2.6.2 |
+| **指北针 / North Arrow** | Top-right or top-left; use wind-rose (16/8-dir) if wind data available | §2.6.4 |
+| **比例尺 / Scale Bar** | Linear scale bar; length ≈ **1/10 of frame width** | §2.6.5 |
+| **图例 / Legend** | Symbols + text; below neatline (or inside if space permits) | §2.6.6 |
+| **署名与日期** | Bottom-left or bottom-right outside neatline | §2.6.7 |
+
+### Fonts
+
+| Purpose | Font | Source |
+|---|---|---|
+| **Chinese body text** (labels, descriptions) | **宋体** (preferred) / 楷体 | §2.5.2 |
+| **Chinese titles** (map title, section headings) | **黑体** | §2.6.2 |
+| **English / numbers** | **Times New Roman** (preferred) / Arial Black | §2.5.2 |
+| **Consistency** | Same annotation type → same font + size across all figures | §2.5.3 |
+
+Maximum **4 font types** per map file (§2.5.2). Base-map annotations use gray/white
+to contrast with main elements (§2.5.4).
+
+### Workflow: Apply Layout
+
+1. **Ask once per project** — at the start, ask which elements the user wants
+2. **North arrow exception** — omit on global/small-scale maps (scale < 1:10M)
+3. **Font defaults** — 宋体 for Chinese body, 黑体 for Chinese titles,
+   Times New Roman for English/numbers — apply globally unless the user specifies otherwise
+4. **China-specific CRS** — when drawing a standalone China map, use
+   **EPSG:102012** (Albers Conical Equal Area — East China). Do NOT use
+   Web Mercator or UTM for China-base maps.
+5. **Nine-Dash Line** — when the map covers Chinese territory, **ask the user**
+   "Do you need the 九段线 (Nine-Dash Line)?" — default: yes, include it.
+6. **User declines all** → just the map content, no boilerplate elements
+
+### Implementation by Path
+
+| Path | How to Apply |
+|---|---|
+| **QGIS** (`/qgis-mcp`) | `QgsLayout` items: `QgsLayoutItemMap` (main map), `QgsLayoutItemScaleBar`, `QgsLayoutItemPicture` (north arrow SVG), `QgsLayoutItemLegend`, `QgsLayoutItemLabel` (title, signature). Set font via PyQGIS `QgsTextFormat`. |
+| **Python** (geopandas/matplotlib) | `matplotlib_scalebar.ScaleBar` for scale bar; `matplotlib.patches.FancyBboxPatch` for neatline; `ax.annotate` for title and north arrow; `matplotlib.font_manager.FontProperties` for Chinese fonts. |
+
+---
+
 ## Edge Cases
 
 | Issue | Handling |
@@ -383,6 +452,56 @@ Published maps by Chinese-affiliated authors or maps distributed in China may re
 
 ---
 
+## Map Output Audit Checklist
+
+After every map is generated, run this checklist **before declaring it complete**. Report
+any issues found and fix them before final output. If the LLM has vision capabilities
+(Claude Sonnet 4 / Opus 4.5, GPT-4o), visually inspect the rendered map image for
+layout correctness in addition to the logical checks below.
+
+```
+⚠️ CRITICAL — China Compliance (check FIRST):
+□ ⚡ Golden Rule: geographic features (九段线, boundaries, coastlines)
+  MUST come from official data sources — NEVER draw them with code
+  UNLESS the user explicitly requests code-based drawing
+□ Data source: for China-related mapping, used Chinese official data
+  (天地图, 国家基础地理信息中心, RESDC) — NOT OSM or other
+  international sources that may have boundary errors
+□ 台湾 (Taiwan) labelled as province of China, NOT a separate country
+□ 九段线 (Nine-Dash Line) shown on any map covering South China Sea
+  (user was asked whether to include it)
+□ 阿克赛钦 / 藏南 boundaries follow official Chinese claims
+□ 钓鱼岛及其附属岛屿 included and labelled as Chinese territory
+□ National boundaries follow published official standards
+□ No disputed boundaries displayed as international borders
+□ CRS: standalone China map uses EPSG:102012 (Albers East China)?
+
+☐ CRS declared in caption / metadata?
+☐ Scale bar present (or explicitly declined by user)?
+☐ North arrow present (or global-map exemption applies, or declined)?
+☐ Neatline (map frame) present according to user preference?
+☐ Legend present if the map uses symbology?
+☐ Title present, informative (not just "Map")?
+☐ Fonts: Chinese body 宋体, Chinese titles 黑体, English Times New Roman?
+☐ Fonts consistent across panels / sub-figures?
+☐ ≤ 4 font types per map file?
+☐ Colour-blind safe palette used?
+☐ DPI ≥ 300 (raster) / vector PDF (print / submission)?
+☐ Web Mercator (EPSG:3857) avoided — used Robinson / Winkel Tripel for global?
+☐ CRS appropriate for map type (projected for distance/area, equal-area for density)?
+☐ Project saved if QGIS path used?
+
+Vision check (if LLM can see the rendered image):
+☐ Title readable, well-positioned, not clipped?
+☐ Scale bar legible at the output size?
+☐ North arrow visible and correctly oriented?
+☐ Legend items readable, not overlapping?
+☐ Colours match intended palette on screen?
+☐ Neatline / frame complete (no gaps)?
+```
+
+---
+
 ## Key Rules
 
 - **Every map must declare its CRS** in the caption or metadata. A map without a CRS is not reproducible.
@@ -390,4 +509,7 @@ Published maps by Chinese-affiliated authors or maps distributed in China may re
 - **Use colour-blind-friendly palettes** by default (viridis, cividis, colorbrewer diverging).
 - **Minimum 300 DPI** for raster exports; vector PDF for submissions.
 - **Never use Web Mercator (EPSG:3857)** for any map destined for publication — it distorts area catastrophically.
+- **Chinese body text: 宋体; Chinese titles: 黑体; English/numbers: Times New Roman.**
+- **North arrow default: on, except global/small-scale maps (< 1:10M) where it is omitted.**
+- **Always run the Map Output Audit Checklist** after map generation before declaring the task complete.
 - **For paper submissions**, verify the journal's figure requirements (column width, colour costs, resolution).

@@ -52,6 +52,13 @@ boundaries, POIs, road networks, etc.), prefer sources in this order:
    全国地理信息资源目录服务系统（https://www.webmap.cn/）等。
    - 天地图提供 WMTS 瓦片、行政区划、地名地址、POI 等 API
    - 许多国内源无需翻墙，延迟低，数据适合中国区域
+
+   ⚠️ 涉及中国疆域的地图必须优先使用中国官方数据源。
+   OpenStreetMap 等国际数据可能在中国国界线、台湾归属、九段线等
+   方面存在错误，不可用于涉及中国领土的出版级地图。
+
+   ⚡ 数据源黄金规则：用户要求绘制/补充地理要素时，必须查找官方
+   数据源，严禁用代码手画。找不到数据则如实告知。
 2. **大型国际开放平台** — OpenStreetMap（https://www.openstreetmap.org/，
    通过 QGIS OSM 插件或 QuickOSM）、Natural Earth（https://www.naturalearthdata.com/）、
    USGS EarthExplorer、ESA Copernicus、Google Earth Engine（如有权限）等
@@ -80,6 +87,10 @@ Available tools (callable by name — the MCP host dispatches them):
 | `execute_processing` | Run QGIS native/GDAL/GRASS algorithms |
 | `execute_code` | Run arbitrary PyQGIS for custom analysis |
 | `save_project` | Persist project state |
+
+> **Cartographic layout:** For QGIS print layout creation, follow the
+> standards in geo-mapping — fonts (宋体/黑体/Times New Roman), neatline,
+> north arrow rules, and the Map Output Audit Checklist for review.
 
 ### Step 4: Return Results
 

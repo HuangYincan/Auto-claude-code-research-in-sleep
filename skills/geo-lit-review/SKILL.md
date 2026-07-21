@@ -125,3 +125,31 @@ Deliver a structured literature review with:
 2. Key themes and trends identified
 3. Gaps or controversies in the literature
 4. Most relevant papers for the research question (with full citations)
+
+---
+
+## ⚠️ 审查与关键检查 (Review & Critical Checks)
+
+**在输出任何文献综述结果前，必须执行以下审查。所有地学任务必须重视审查环节。**
+
+### ⚡ 数据源黄金规则 (Golden Rule — Do NOT Fabricate Data)
+
+用户要求绘制或补充任何地理要素（如九段线、国界线、海岸线等）时：
+1. **必须查找官方数据源** — 天地图、国家基础地理信息中心、自然资源部发布的权威数据
+2. **严禁用代码手画** — 不要自己用 Python 或 PyQGIS 代码绘制地理要素边界，这不是科学严谨的做法
+3. **找不到数据则如实告知** — 如果无法找到官方数据源，明确告知用户"未找到相关官方数据"
+4. **唯一例外** — 用户明确要求"用代码绘制"时才可这样做
+
+### 1. 数据源审查 (Data Source Audit)
+- [ ] 涉及中国区域的地学文献，是否覆盖了国内重要期刊（如《地理学报》《地球信息科学学报》等）？
+- [ ] 数据来源（论文 PDF、数据集 URL）是否完整记录？
+
+### 2. 中国合规审查 (China Compliance Audit)
+- [ ] 综述中涉及中国领土、边界、台湾等表述是否正确？
+- [ ] 台湾的研究机构表述为"中国台湾"或"Taiwan, China"
+- [ ] 南海、藏南等区域的地名使用官方标准名称
+
+### 3. 结果审查 (Output Audit)
+- [ ] 文献检索策略可复现？
+- [ ] 关键论文的全引用信息完整？
+- [ ] 知识空白和争议点已明确标注？
