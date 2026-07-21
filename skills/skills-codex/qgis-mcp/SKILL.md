@@ -11,18 +11,26 @@ allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 
 ## Prerequisites
 
-Before using this skill, the QGIS-MCP server must be registered and QGIS must
-be running with the QGIS MCP plugin started. See `docs/integrations/qgis-mcp.md`
-for setup.
+Before using this skill, you need:
 
-Quick verification (adapt client command for your platform):
+1. **uv** — install from https://docs.astral.sh/uv/
+2. **QGIS Desktop 3.x** running with the **QGIS MCP plugin** started
+   (Plugins → QGIS MCP → Start Server).
+
+Register the MCP server with your client:
+
+**Local** (self-contained, 15 core tools):
 ```bash
-# Check if the qgis MCP server is listed
-# (Client-specific — refer to docs/integrations/qgis-mcp.md for setup)
+claude mcp add qgis -s project -- uv --directory <aris>/mcp-servers/qgis run server.py
 ```
 
-**QGIS must be running** with the plugin server started (Plugins → QGIS MCP →
-Start Server). Otherwise every tool call returns a connection error.
+**Remote** (upstream, 102 tools — no local server needed):
+```bash
+claude mcp add qgis -s project -- uvx --from https://github.com/nkarasiak/qgis-mcp/archive/refs/heads/main.zip qgis-mcp-server
+```
+
+> **QGIS must be running** with the plugin server started. Otherwise every
+> tool call returns a connection error.
 
 ## Workflow
 
