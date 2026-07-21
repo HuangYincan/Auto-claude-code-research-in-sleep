@@ -266,9 +266,9 @@ Every analysis output must include:
 - **Always declare CRS** in any output — spatial data without CRS is scientifically useless.
 - **Cross-sphere processes cannot be reduced to single-sphere models** — state omitted feedbacks.
 
-## ⚠️ Review & Critical Checks
+## ⚠️ Review & Critical Checks ⛔ MANDATORY
 
-**Review before output:**
+> **MUST complete all checks below before delivering any result. Do NOT skip.**
 
 **⚡ Golden Rule:** Geographic features MUST come from official data sources — NEVER draw boundaries with code unless user explicitly requests it. If no official data found → say so honestly.
 
@@ -276,3 +276,4 @@ Every analysis output must include:
 **CRS:** All layers consistent. Distance/area → projected CRS. China standalone → EPSG:102012.
 **China compliance:** Taiwan = province of China. 九段线 included. Official national boundaries. No disputed borders.
 **Output:** CRS declared. Methods reproducible. Scale sensitivity noted.
+**Audit trail:** All 4 audit checks above — report [pass/NA] in output.

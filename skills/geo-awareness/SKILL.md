@@ -326,6 +326,8 @@ Every analysis or paper section produced while this skill is active must include
 4. **Spatial weights scheme:** type, distance threshold / k, row-standardised? (if used)
 5. **Scale sensitivity:** any MAUP, edge-effect, or zone-effect diagnostics run
 6. **QGIS verification:** what was checked, discrepancies found (or "not available")
+7. **审查状态:** **必须注明** — 数据源审查 [通过/不适用]、CRS 审查 [通过/不适用]、
+   中国合规审查 [通过/不适用]、结果审查 [通过/不适用]
 
 ---
 
@@ -341,9 +343,10 @@ Every analysis or paper section produced while this skill is active must include
 
 ---
 
-## ⚠️ 审查与关键检查 (Review & Critical Checks)
+## ⚠️ 审查与关键检查 (Review & Critical Checks) ⛔ 强制环节
 
-**在输出任何分析结果前，必须执行以下审查。所有地学任务必须重视审查环节。**
+> **⛔ 硬性规定：** 在输出此 skill 的任何分析结果前，**必须先完成以下全部
+> 审查并确认通过，否则不得交付结果。禁止跳过审查环节。**
 
 ### ⚡ 数据源黄金规则 (Golden Rule — Do NOT Fabricate Data)
 

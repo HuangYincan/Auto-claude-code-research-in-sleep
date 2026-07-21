@@ -330,11 +330,16 @@ data/
 └── boundaries/              # Study area boundary files
 ```
 
+**审计追溯：** `data/README.md` 中必须包含审查状态：
+数据源审查 [通过/不适用]、CRS 审查 [通过/不适用]、
+中国合规审查 [通过/不适用]、结果审查 [通过/不适用]
+
 ---
 
-## ⚠️ 审查与关键检查 (Review & Critical Checks)
+## ⚠️ 审查与关键检查 (Review & Critical Checks) ⛔ 强制环节
 
-**在提交任何数据产品前，必须执行以下审查。所有地学任务必须重视审查环节。**
+> **⛔ 硬性规定：** 在提交任何数据产品前，**必须先完成以下全部审查并确认通过，
+> 否则不得交付。禁止跳过审查环节。**
 
 ### ⚡ 数据源黄金规则 (Golden Rule — Do NOT Fabricate Data)
 

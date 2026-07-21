@@ -219,6 +219,28 @@ Vision check (if LLM can see the image): title readable? scale bar legible?
 north arrow visible? legend not overlapping? colours correct?
 ```
 
+### Codex Vision Review (External Audit) ⛔ MANDATORY
+
+**If a map was rendered, you MUST run this review before the task is complete.
+Do NOT skip this step.**
+
+After self-check, pass the rendered map image to Codex (= GPT with vision)
+for independent external review via the codex MCP tool.
+
+**Review prompt for Codex:**
+
+> Examine this rendered map image. Check:
+> ⚠️ Taiwan label? 九段线? Boundaries correct?
+> ☐ Layout, fonts Chinese 宋体/黑体 + English TNR?
+> ☐ Colors colour-blind safe? No Web Mercator?
+> ☐ Visual defects? List ALL issues. Be strict.
+> If zero issues, respond with exactly "APPROVED".
+
+**If issues found:** fix → re-render → re-review (fresh thread each round)
+until Codex responds "APPROVED".
+
+> **科学严谨性优先：** 速度慢没关系，地图极易出错，多审一轮远好于提交问题图。
+
 ---
 
 ## Key Rules
