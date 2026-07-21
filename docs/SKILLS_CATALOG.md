@@ -1,6 +1,6 @@
 # ARIS Skills Catalog
 
-Every skill that ships with ARIS, grouped by role. **83 skills** as of the
+Every skill that ships with ARIS, grouped by role. **85 skills** as of the
 latest update; new skills land via PR and get added to the table below.
 
 - Each `Skill` link goes to the canonical `SKILL.md` (the LLM-readable spec).
@@ -56,7 +56,7 @@ Paper retrieval, summarization, novelty verification.
 | [`/gemini-search`](../skills/gemini-search/SKILL.md) | Gemini-driven literature discovery — decomposes topics into sub-problems, aliases, variants | `gemini-cli` v0.40+ |
 | [`/alphaxiv`](../skills/alphaxiv/SKILL.md) | Quick single-paper lookup via [AlphaXiv](https://alphaxiv.org) — three-tier fallback (overview → markdown → LaTeX source) | None |
 | [`/comm-lit-review`](../skills/comm-lit-review/SKILL.md) | Communications-domain literature review with Claude-style knowledge-base-first retrieval — wireless / networking / satellite / Wi-Fi / cellular | None |
-| [`/geo-awareness`](../skills/geo-awareness/SKILL.md) | Geoscience domain awareness — CRS, spatial topology, earth system science, spatial analysis techniques (Moran's I, GWR, KDE, LISA, hot spot, space-time cube, remote sensing DL) for earth / environmental / geoscience research | None |
+| [`/geo-lit-review`](../skills/geo-lit-review/SKILL.md) | Earth-science-domain literature review — AGU/EGU/GSA/GeoRef/USGS searches with subdomain-specific keyword strategies and venue tiering | None |
 | [`/novelty-check`](../skills/novelty-check/SKILL.md) | Verify a research idea is novel against recent literature — multi-source search + cross-model verification + closest-prior-work table | Codex MCP |
 
 ## 💡 Ideation & Method Design
@@ -70,6 +70,7 @@ Generating, refining, planning research ideas before implementation.
 | [`/experiment-plan`](../skills/experiment-plan/SKILL.md) | Turn a refined proposal into a claim-driven experiment roadmap — ablations, budgets, run order | None |
 | [`/ablation-planner`](../skills/ablation-planner/SKILL.md) | Design ablation studies from a reviewer's perspective (after main results pass `/result-to-claim`) | Codex MCP |
 | [`/formula-derivation`](../skills/formula-derivation/SKILL.md) | Structure theory derivations — organize assumptions, build derivation chains, turn scattered equations into coherent narrative | None |
+| [`/geo-awareness`](../skills/geo-awareness/SKILL.md) | Geoscience domain awareness — CRS, spatial topology, earth system science, spatial analysis techniques (Moran's I, GWR, KDE, LISA, hot spot, space-time cube, remote sensing DL) for earth / environmental / geoscience research | None |
 
 ## 🧪 Experiments & Infrastructure
 
@@ -83,6 +84,7 @@ GPU job submission, scheduling, monitoring, profiling.
 | [`/experiment-queue`](../skills/experiment-queue/SKILL.md) | SSH job queue for multi-seed / multi-config sweeps — OOM retry, stale-screen cleanup, wave gating, crash-safe state | SSH access |
 | [`/vast-gpu`](../skills/vast-gpu/SKILL.md) | Rent, manage, destroy on-demand GPU on [Vast.ai](https://vast.ai) | Vast.ai account + `vast-cli` |
 | [`/serverless-modal`](../skills/serverless-modal/SKILL.md) | Run GPU workloads on [Modal](https://modal.com) — zero-config serverless, auto scale-to-zero | `pip install modal` + Modal account |
+| [`/geo-data-pipeline`](../skills/geo-data-pipeline/SKILL.md) | Geoscience data acquisition and preprocessing — OSM/Overpass/osmnx, ChinaGeoSS, Tianditu, RESDC, gscloud, Sentinel, Landsat, ERA5, STAC | Python packages vary by data source |
 | [`/qzcli`](../skills/qzcli/SKILL.md) | Manage GPU compute jobs on the Qizhi (启智) platform via `qzcli` (kubectl-style CLI) | `qzcli` installed |
 | [`/training-check`](../skills/training-check/SKILL.md) | Periodically poll W&B metrics during training — catch NaN, loss divergence, idle GPUs early | W&B account |
 | [`/system-profile`](../skills/system-profile/SKILL.md) | Profile a target (script / process / GPU / memory / interconnect) with external tools + code instrumentation; produce actionable report | Profiling tools |

@@ -31,9 +31,9 @@ Use this skill when the research involves any aspect of earth science or geospat
 - **CRS_JUSTIFICATION_REQUIRED** — any distance calculation, area measurement, or spatial operation must name the CRS used and justify why it is appropriate for the location and purpose.
 - **OUTPUT_CRS_FORMAT = "EPSG:{code}"** — all CRS references in output must use the EPSG code.
 
-## Relationship to Other ARIS Skills
+`geo-awareness` provides domain-knowledge that is relevant across the **entire** research lifecycle. Unlike phase-specific skills, it is a conceptual foundation that should be referenced whenever the research involves earth science:
 
-`geo-awareness` provides the domain-knowledge layer that should be loaded alongside other skills when the subject is earth science:
+## Relationship to Other ARIS Skills
 
 | When using … | Apply geo-awareness's … |
 |---|---|
@@ -230,6 +230,31 @@ Below is an overview of core spatial analysis techniques. Detailed algorithmic d
 | **Change detection (Siamese/UNet)** | Multi-temporal pixel change | Deforestation, urban expansion, disaster mapping |
 
 **Spectral consideration:** Remote sensing models must account for sensor spectral response (different band configurations, bit depths, solar zenith angle correction, atmospheric correction).
+
+### 4.7 Spatial Cross-Validation for Geospatial ML
+
+Standard random train/test split assumes independent samples — a violated by spatial autocorrelation (Tobler's Law). This is one of the most common errors in geospatial ML papers.
+
+| Method | What It Causes | Fix |
+|---|---|---|
+| Random split | Test set contains neighbours of training samples → inflated R² | Spatial blocking or buffer-based split |
+| Random k-fold CV | Over-optimistic error estimates | Spatial cross-validation (block / cluster-based folds) |
+
+#### Techniques
+
+| Technique | Description | When to Use |
+|---|---|---|
+| **Spatial Block CV** | Divide study area into equal-sized grid blocks; each fold = one or more blocks | Regular sampling, large extent |
+| **Buffered CV** | Exclude a buffer zone (e.g. 5–10 km) around each training sample from the test set | Point-based data with known interaction range |
+| **Cluster-based CV** | k-means clustering of coordinates; folds ≈ clusters | Irregularly spaced samples |
+| **Leave-One-Region-Out** | Leave out an entire region (e.g. one province or catchment) | Multi-region studies; need ≥ 5 regions |
+| **Checkerboard split** | Alternating grid cells (like chessboard) | Quick sanity check; may leak across cells |
+
+#### Rule
+
+If the dataset has spatial coordinates AND the target variable exhibits spatial autocorrelation (Moran's I > 0, verified in a preliminary ESDA step), random train/test split or standard k-fold CV **will overestimate performance** — often by a large margin. Use spatial CV and report both standard and spatial CV metrics.
+
+**Key references:** Roberts et al. (2017) *Ecography*, 40(8), 913–929; Meyer et al. (2018) *Ecological Modelling*, 368, 109–128; Valavi et al. (2019) *Methods in Ecology and Evolution*, 10(2), 228–245.
 
 ---
 

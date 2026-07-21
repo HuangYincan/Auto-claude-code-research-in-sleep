@@ -272,6 +272,77 @@ Every output file name should indicate content and CRS. Caption template:
 
 ---
 
+## Cartographic Colour with ColorBrewer
+
+Use [ColorBrewer 2.0](https://colorbrewer2.org/) — the standard reference for map colour schemes.
+
+### Palette Types
+
+| Type | Pattern | Examples | Best For |
+|---|---|---|---|
+| **Sequential** | Light → dark (low → high) | YlOrRd, BuGn, PuBuGn, Greens | Ordered data: elevation, temperature, probability (3–9 classes) |
+| **Diverging** | Two extremes + neutral middle | RdYlBu, Spectral, PiYG, BrBG | Bipolar data: anomaly, correlation, surplus/deficit (3–11 classes) |
+| **Qualitative** | Distinct hues, no order | Set1, Set2, Accent, Pastel1 | Categories: land cover, lithology, soil type (max 8–12 categories) |
+
+### Accessibility Requirements
+
+- **Colour-blind safe:** Avoid red-green pairs; use ColorBrewer's colour-blind-safe flag
+- **Print-safe:** Check grayscale convertibility (the greyscale icon in ColorBrewer)
+- **Photocopy-safe:** Check photocopy legibility (the photocopy icon in ColorBrewer)
+
+### Python Integration
+
+```python
+import palettable
+
+# Sequential
+colors = palettable.colorbrewer.sequential.YlOrRd_9.mpl_colors
+
+# Diverging
+colors = palettable.colorbrewer.diverging.RdYlBu_11.mpl_colors
+
+# Qualitative
+colors = palettable.colorbrewer.qualitative.Set1_9.mpl_colors
+```
+
+### QGIS Integration
+
+ColorBrewer palettes are built into QGIS's graduated/categorized renderer — select from the colour ramp dropdown under "Color Ramp".
+
+---
+
+## Web Maps from Geoscience Data
+
+For interactive web maps, online supplementary materials, or dashboard-style exploration. **This section always uses Python.** If QGIS is available for print maps, render the web version as a supplement.
+
+### Mapbox GL JS
+
+- Style-driven vector tiles: high performance, smooth interaction
+- Custom basemap styles (satellite, terrain, light/dark) + data overlay
+- Python bridge: `mapboxgl` (export GeoJSON → Mapbox template → HTML)
+- Use case: online dashboard with toggleable layers, custom legends
+
+### CesiumJS (3D Globe)
+
+- True 3D terrain + imagery + 3D Tiles + time-dynamic data animation
+- Best for: glacier mass-balance animation, InSAR displacement maps, satellite orbit visualisation, LiDAR point clouds
+- Python bridge: `cesiumpy` (generate HTML+JS from Python script)
+- Cesium Ion: hosted terrain/imagery/3D Tiles service (free tier available)
+
+### Leaflet / folium (Lightweight)
+
+```python
+import folium
+m = folium.Map(location=[40, 116], zoom_start=10)
+folium.Choropleth(geo_data=gdf, data=values).add_to(m)
+m.save("maps/interactive.html")
+```
+
+- `leafmap`: higher-level wrapper — fewer lines, built-in basemaps
+- Good for: rapid prototyping, supplementary figures, no API tokens needed
+
+---
+
 ## Edge Cases
 
 | Issue | Handling |
@@ -282,6 +353,33 @@ Every output file name should indicate content and CRS. Caption template:
 | **Colour-blind accessibility** | Use viridis/cividis for sequential maps; colorbrewer diverging for bipolar; avoid red-green |
 | **Global map distortion** | Use Robinson or Winkel Tripel; never use Web Mercator for display |
 | **Zero values in log-scale** | Add a small offset or use arcsinh transformation; note in caption |
+
+---
+
+## Map Review Compliance (China)
+
+Any map that shows Chinese territory in a publication must comply with national mapping regulations. The Ministry of Natural Resources publishes a problem map (问题地图) review reference at [mnr.gov.cn](https://www.mnr.gov.cn/dt/ywbb/201908/t20190802_2451218.html).
+
+### Mandatory Requirements
+
+| Requirement | Detail |
+|---|---|
+| **九段线 (Nine-Dash Line)** | Must be shown on any map covering the South China Sea area |
+| **台湾 labelling** | Must be labelled as a province of China, not as a separate country |
+| **阿克赛钦 / 藏南** | Boundaries must follow official Chinese territorial claims |
+| **钓鱼岛及其附属岛屿** | Must be included and labelled within Chinese territory |
+| **国界线** | All international boundaries must follow published official standards |
+
+### Prohibited
+
+- Displaying disputed boundaries as international border lines
+- Omitting Taiwan from maps of China
+- Labelling Tibet or Xinjiang as independent territories
+- Displaying sensitive military or infrastructure features at large scale
+
+### Review Requirement
+
+Published maps by Chinese-affiliated authors or maps distributed in China may require formal **地图审核 (map review)** before publication. Check with the target journal or publisher for their specific map compliance policy for China.
 
 ---
 
