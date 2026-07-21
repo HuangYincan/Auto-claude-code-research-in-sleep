@@ -102,3 +102,13 @@ Valid source values:
 ## Output
 
 Structured review with: number of papers per source, key themes, gaps, most relevant papers.
+
+## ⚠️ Review & Critical Checks
+
+**Review before output:**
+
+**⚡ Golden Rule:** Geographic features MUST come from official data sources — NEVER draw boundaries with code unless user explicitly requests it.
+
+**Data source:** China-related literature → include domestic Chinese journals. Full citations recorded.
+**China compliance:** Taiwan references → "中国台湾" or "Taiwan, China". Official place names for South China Sea, Tibet.
+**Output:** Search strategy reproducible. Key papers fully cited. Gaps clearly stated.

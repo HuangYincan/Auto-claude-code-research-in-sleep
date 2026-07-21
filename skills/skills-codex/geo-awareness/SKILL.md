@@ -265,3 +265,14 @@ Every analysis output must include:
 - **Always row-standardise spatial weights** before Moran's I or spatial lag.
 - **Always declare CRS** in any output — spatial data without CRS is scientifically useless.
 - **Cross-sphere processes cannot be reduced to single-sphere models** — state omitted feedbacks.
+
+## ⚠️ Review & Critical Checks
+
+**Review before output:**
+
+**⚡ Golden Rule:** Geographic features MUST come from official data sources — NEVER draw boundaries with code unless user explicitly requests it. If no official data found → say so honestly.
+
+**Data source:** China data → Chinese official sources only. No OSM for boundaries.
+**CRS:** All layers consistent. Distance/area → projected CRS. China standalone → EPSG:102012.
+**China compliance:** Taiwan = province of China. 九段线 included. Official national boundaries. No disputed borders.
+**Output:** CRS declared. Methods reproducible. Scale sensitivity noted.

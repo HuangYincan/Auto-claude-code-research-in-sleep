@@ -112,7 +112,51 @@ cd ~/your-paper-project
 bash ~/aris_repo/tools/install_aris.sh
 ```
 
-## Step 4: Configure GPU Server
+## Step 4: Configure MCP Servers (Before Starting Research)
+
+MCP servers (codex, qgis, feishu, zotero, etc.) must be registered **before** starting
+your first research pipeline. After registration, restart Claude Code — all MCP servers
+take effect after a session restart.
+
+```bash
+# Register all MCP servers you plan to use in this project
+claude mcp add codex -s user -- codex mcp-server          # cross-model review (required for all workflows)
+claude mcp add qgis -s project -- uv --directory /path/to/aris/mcp-servers/qgis run server.py  # QGIS (optional)
+# ... any other MCP servers
+
+# Then restart Claude Code
+```
+
+> ⚠️ **If you add a new MCP server mid-project, you must restart Claude Code,
+> which loses the current conversation context. Configure everything upfront.**
+
+### What MCP Servers Are Available?
+
+ARIS bundles the following MCP servers:
+
+| Server | Source | Purpose | Requires |
+|---|---|---|---|
+| `codex` | `codex mcp-server` (built-in CLI command) | Cross-model GPT review | [Codex CLI](https://developers.openai.com/codex) installed |
+| `qgis` | `mcp-servers/qgis/` | QGIS geospatial analysis | QGIS Desktop + QGIS MCP plugin |
+| `claude-review` | `mcp-servers/claude-review/` | Self-review using Claude API | (built-in) |
+| `gemini-review` | `mcp-servers/gemini-review/` | Cross-review using Gemini API | Gemini API key |
+| `codex-image2` | `mcp-servers/codex-image2/` | AI image generation via Codex | Codex CLI installed |
+| `llm-chat` | `mcp-servers/llm-chat/` | OpenAI-compatible chat API | API key |
+| `minimax-chat` | `mcp-servers/minimax-chat/` | MiniMax chat API | MiniMax API key |
+| `feishu-bridge` | `mcp-servers/feishu-bridge/` | Feishu (Lark) messaging | (built-in) |
+| `manual-review` | `mcp-servers/manual-review/` | Human-in-the-loop review | (built-in, opens browser) |
+
+Most servers just need `claude mcp add` → restart. See `docs/integrations/` for per-server details.
+
+**Recommended order:**
+
+1. Register all MCP servers you plan to use (all `claude mcp add ...` commands)
+2. Restart Claude Code once (all take effect)
+3. Proceed to Step 5 — all MCPs available throughout the entire project
+
+---
+
+## Step 5: Configure GPU Server
 
 If your experiments run on a remote GPU server, you need two things: SSH key-based auth + server info in CLAUDE.md.
 
@@ -167,7 +211,7 @@ ssh username@your-server-ip 'eval "$(/path/to/miniconda3/bin/conda shell.bash ho
 
 Should output Python version, PyTorch version, and GPU count.
 
-## Step 5: Initialize Research Wiki
+## Step 6: Initialize Research Wiki
 
 Research Wiki is ARIS's core knowledge base — it automatically accumulates papers you've read, ideas you've generated, and experiments you've run. Other skills write to it automatically; you don't need to maintain it manually.
 
@@ -192,7 +236,7 @@ research-wiki/
   graph/                 ← relationship graph (edges.jsonl)
 ```
 
-## Step 6: Verify
+## Step 7: Verify
 
 Restart Claude Code and test in your research project directory:
 

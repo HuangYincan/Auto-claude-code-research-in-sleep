@@ -54,3 +54,14 @@ Standardised API for raster data discovery: Microsoft Planetary Computer, Earth 
 ## 9. Output
 
 `data/` directory with raw/processed/boundaries subdirs + `README.md` provenance log (source, date, CRS, preprocessing steps).
+
+## ⚠️ Review & Critical Checks
+
+**Review before output:**
+
+**⚡ Golden Rule:** Geographic features MUST come from official data sources — NEVER draw boundaries with code unless user explicitly requests it. If no official data found → say so honestly.
+
+**Data source:** China data → Chinese official sources (天地图, RESDC, gscloud.cn). No OSM boundaries.
+**CRS:** All data CRS confirmed. China region → CGCS2000 or EPSG:102012.
+**China compliance:** Official boundary sources for borders, Taiwan, 九段线, Aksai Chin.
+**Output:** `data/README.md` complete. Preprocessing reproducible (parameters + versions recorded).

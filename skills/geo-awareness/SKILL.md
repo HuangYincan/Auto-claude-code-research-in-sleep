@@ -338,3 +338,42 @@ Every analysis or paper section produced while this skill is active must include
 - **Always declare CRS** in any output — a spatial product without a CRS is scientifically useless.
 - **When in doubt about a spatial operation, check with QGIS via `/qgis-mcp`** instead of reasoning from mental model.
 - **Cross-sphere processes cannot be reduced to single-sphere models** — state omitted feedbacks.
+
+---
+
+## ⚠️ 审查与关键检查 (Review & Critical Checks)
+
+**在输出任何分析结果前，必须执行以下审查。所有地学任务必须重视审查环节。**
+
+### ⚡ 数据源黄金规则 (Golden Rule — Do NOT Fabricate Data)
+
+用户要求绘制或补充任何地理要素（如九段线、国界线、海岸线等）时：
+1. **必须查找官方数据源** — 天地图、国家基础地理信息中心、自然资源部发布的权威数据
+2. **严禁用代码手画** — 不要自己用 Python 或 PyQGIS 代码绘制地理要素边界，这不是科学严谨的做法
+3. **找不到数据则如实告知** — 如果无法找到官方数据源，明确告知用户"未找到相关官方数据"
+4. **唯一例外** — 用户明确要求"用代码绘制"时才可这样做
+
+### 1. 数据源审查 (Data Source Audit)
+- [ ] 涉及中国区域的数据，是否优先使用中国官方源（天地图、国家基础地理信息中心、RESDC、gscloud.cn）？
+- [ ] 是否避免了 OpenStreetMap 等可能存在边界错误的国际源？
+- [ ] 数据来源是否明确记录在输出报告中？
+
+### 2. 空间参考审查 (CRS Audit)
+- [ ] 所有数据层 CRS 一致？
+- [ ] 距离/面积分析使用投影坐标系？
+- [ ] 全球图使用 Robinson / Winkel Tripel？
+- [ ] 单独绘制中国地图使用 EPSG:102012 (Albers East China)？
+
+### 3. 中国合规审查 (China Compliance Audit)
+- [ ] 台湾标注为"中国台湾省"或"Taiwan, China"，不作为独立国家
+- [ ] 九段线 / 南海诸岛范围线正确表达
+- [ ] 阿克赛钦/藏南边界遵循官方主张
+- [ ] 钓鱼岛及其附属岛屿包含在中国领土内
+- [ ] 不使用有争议的国界线
+- [ ] 地图正式出版前是否需要审图？
+
+### 4. 结果审查 (Output Audit)
+- [ ] 所有输出文件命名规范且可复现？
+- [ ] CRS 在元数据/说明中声明？
+- [ ] 空间权重矩阵方案已记录？
+- [ ] 尺度敏感性（MAUP、边缘效应）已评估或注明？

@@ -112,7 +112,48 @@ cd ~/your-paper-project
 bash ~/aris_repo/tools/install_aris.sh
 ```
 
-## 第四步：配置 GPU 服务器
+## 第四步：配置 MCP 服务器（开始研究之前）
+
+MCP 服务器（codex、qgis、feishu、zotero 等）必须在**启动第一个研究流程之前**配置好。
+注册后需要重启 Claude Code 会话才能生效。
+
+```bash
+# 注册所有你计划使用的 MCP 服务器
+claude mcp add codex -s user -- codex mcp-server          # 跨模型审稿（所有工作流必需）
+claude mcp add qgis -s project -- uv --directory /path/to/aris/mcp-servers/qgis run server.py  # QGIS（可选）
+# ... 其他 MCP 服务器
+
+# 最后重启 Claude Code
+```
+
+> ⚠️ **如果在项目进行中添加新的 MCP 服务器，必须重启 Claude Code，**
+> **导致当前对话上下文丢失。建议一次性全部配好。**
+
+### ARIS 自带的 MCP 服务器
+
+| 服务器 | 来源 | 用途 | 依赖 |
+|---|---|---|---|
+| `codex` | `codex mcp-server`（CLI 内置命令） | 跨模型 GPT 审稿 | 需安装 [Codex CLI](https://developers.openai.com/codex) |
+| `qgis` | `mcp-servers/qgis/` | QGIS 地理空间分析 | 需安装 QGIS + QGIS MCP 插件 |
+| `claude-review` | `mcp-servers/claude-review/` | 使用 Claude API 自审 | 内置 |
+| `gemini-review` | `mcp-servers/gemini-review/` | 使用 Gemini API 跨模型审稿 | 需 Gemini API 密钥 |
+| `codex-image2` | `mcp-servers/codex-image2/` | 通过 Codex 生成 AI 图像 | 需安装 Codex CLI |
+| `llm-chat` | `mcp-servers/llm-chat/` | OpenAI 兼容聊天 API | 需 API 密钥 |
+| `minimax-chat` | `mcp-servers/minimax-chat/` | MiniMax 聊天 API | 需 MiniMax API 密钥 |
+| `feishu-bridge` | `mcp-servers/feishu-bridge/` | 飞书消息通知 | 内置 |
+| `manual-review` | `mcp-servers/manual-review/` | 人工审稿（打开浏览器） | 内置 |
+
+多数服务器只需 `claude mcp add` + 重启即可使用。详细配置见 `docs/integrations/`。
+
+**推荐顺序：**
+
+1. 一次性注册所有要用的 MCP 服务器
+2. 重启 Claude Code（全部生效）
+3. 进入第五步 — 整个项目过程中所有 MCP 都可用
+
+---
+
+## 第五步：配置 GPU 服务器
 
 如果你的实验需要跑在远程 GPU 服务器上，需要两步：SSH 免密登录 + 写入服务器信息。
 
@@ -167,7 +208,7 @@ ssh username@your-server-ip 'eval "$(/path/to/miniconda3/bin/conda shell.bash ho
 
 应输出 Python 版本、PyTorch 版本和 GPU 数量。
 
-## 第五步：初始化 Research Wiki
+## 第六步：初始化 Research Wiki
 
 Research Wiki 是 ARIS 的核心知识库，自动积累你整个研究过程中读过的论文、产生的想法、跑过的实验。其他 skill 会自动往里写入内容，你不需要手动维护。
 
@@ -192,7 +233,7 @@ research-wiki/
   graph/                 ← 关系图谱（edges.jsonl）
 ```
 
-## 第六步：验证
+## 第七步：验证
 
 重启 Claude Code，在研究项目目录下测试：
 
