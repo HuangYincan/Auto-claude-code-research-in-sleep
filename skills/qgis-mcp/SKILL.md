@@ -2,7 +2,7 @@
 name: qgis-mcp
 description: Geospatial analysis via QGIS-MCP — load GIS data, run processing algorithms, render maps, and execute PyQGIS code from a research pipeline.
 argument-hint: "[task description]"
-allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
+allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex
 ---
 
 # QGIS-MCP: Geospatial Analysis via QGIS
@@ -108,12 +108,51 @@ Available tools (callable by name — the MCP host dispatches them):
 > neatline, north arrow rules, and the **Map Output Audit Checklist** for
 > post-generation review.
 
-### Step 4: Return Results
+### Step 4: Codex Vision Review (External Audit) ⚠️ 强制环节
+
+> **⛔ 硬性规定：** 但凡此技能执行过程中渲染了地图（`render_map` 或
+> `execute_code` 导出布局），**必须先通过 Codex 视觉审核，才能进入 Step 5。
+> 禁止跳过此步骤直接返回结果。**
+
+After rendering a map, pass the output image to Codex (GPT with vision)
+for **independent external review**:
+
+```
+mcp__codex__codex:
+  prompt: >
+    You are a cartographic quality auditor. Examine this rendered QGIS map
+    image and report any issues. Check:
+
+    ⚠️ CRITICAL — China compliance: Taiwan correctly labelled as province
+    of China? 九段线 shown where applicable? All boundaries correct?
+    No disputed borders shown as international?
+
+    ☐ Layout: title, scale bar, north arrow, legend, neatline all present?
+    ☐ Fonts: Chinese 宋体/黑体, English Times New Roman?
+    ☐ Colors: colour-blind safe palette? Not Web Mercator?
+    ☐ Visual defects: clipping, text overlap, unreadable labels?
+    ☐ QGIS render quality: labels not misaligned, symbols not clipped?
+
+    List ALL issues found. Be strict — this is for a scientific publication.
+    If zero issues, respond with exactly "APPROVED".
+```
+
+**Fix loop:** If Codex reports issues → fix in QGIS project → re-render →
+re-review (fresh `mcp__codex__codex` thread each round) → loop until "APPROVED".
+
+> **⏱ 科学严谨性优先：** 地学制图审核以严谨科学为第一原则，**速度慢一点
+> 没关系。** 地图产品极容易出错（比例尺错误、色值偏差、国界线问题等），
+> 多一轮审核远好于提交有问题的地图。
+
+### Step 5: Return Results ⛔ 必须先通过 Step 4
+
+> **前置条件：** 如果此任务涉及地图渲染，必须先完成 Step 4 审核且结果为
+> **"APPROVED"**，否则不得执行此步骤。
 
 Summarize what was accomplished, including:
 - Layers loaded or created
 - Processing algorithms run and their outputs
-- Map images rendered (note the file path)
+- Map images rendered — **必须附带 Codex 审核状态: [APPROVED / 不适用]**
 - Any data extracts or analysis results
 
 Combine with `/analyze-results` or other ARIS skills as needed for

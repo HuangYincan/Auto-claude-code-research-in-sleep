@@ -90,9 +90,36 @@ Available tools (callable by name — the MCP host dispatches them):
 
 > **Cartographic layout:** For QGIS print layout creation, follow the
 > standards in geo-mapping — fonts (宋体/黑体/Times New Roman), neatline,
-> north arrow rules, and the Map Output Audit Checklist for review.
+> north arrow rules, and the Map Output Audit Checklist.
 
-### Step 4: Return Results
+### Codex Vision Review (External Audit) ⛔ MANDATORY
+
+**If a map was rendered, you MUST run this review before returning results.
+Do NOT skip this step.**
+
+After rendering the map, pass the output image to Codex (= GPT with vision)
+for independent external review via the codex MCP tool.
+
+**Review prompt for Codex:**
+
+> Examine this rendered QGIS map image. Check:
+> ⚠️ Taiwan label? 九段线? Boundaries correct?
+> ☐ Layout (title, scale bar, north arrow, legend, neatline)?
+> ☐ Fonts Chinese 宋体/黑体 + English TNR?
+> ☐ Colors colour-blind safe? No Web Mercator?
+> ☐ QGIS render quality: labels aligned, symbols correct?
+> ☐ Visual defects? List ALL issues. Be strict.
+> If zero issues, respond with exactly "APPROVED".
+
+**Fix loop:** issues found → fix in QGIS → re-render → re-review
+(fresh thread each round) → loop until "APPROVED".
+
+> **科学严谨性优先：** 速度慢没关系，地图极易出错，多审一轮远好于提交问题图。
+
+### Step 5: Return Results ⛔ Requires Step 4 Approval
+
+**Prerequisite:** If the task involved map rendering, Step 4 must have
+resulted in "APPROVED" before proceeding.
 
 Summarize what was accomplished, including:
 - Layers loaded or created

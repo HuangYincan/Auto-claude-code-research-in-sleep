@@ -54,10 +54,11 @@ Standardised API for raster data discovery: Microsoft Planetary Computer, Earth 
 ## 9. Output
 
 `data/` directory with raw/processed/boundaries subdirs + `README.md` provenance log (source, date, CRS, preprocessing steps).
+**Audit trail:** `data/README.md` must include audit status for all 4 checks below.
 
-## ⚠️ Review & Critical Checks
+## ⚠️ Review & Critical Checks ⛔ MANDATORY
 
-**Review before output:**
+> **MUST complete all checks before delivering any data product. Do NOT skip.**
 
 **⚡ Golden Rule:** Geographic features MUST come from official data sources — NEVER draw boundaries with code unless user explicitly requests it. If no official data found → say so honestly.
 

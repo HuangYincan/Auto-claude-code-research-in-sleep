@@ -102,10 +102,11 @@ Valid source values:
 ## Output
 
 Structured review with: number of papers per source, key themes, gaps, most relevant papers.
+**Audit trail:** Data source audit [pass/NA], China compliance [pass/NA], Output audit [pass/NA] — MUST be reported.
 
-## ⚠️ Review & Critical Checks
+## ⚠️ Review & Critical Checks ⛔ MANDATORY
 
-**Review before output:**
+> **MUST complete all checks before delivering results. Do NOT skip.**
 
 **⚡ Golden Rule:** Geographic features MUST come from official data sources — NEVER draw boundaries with code unless user explicitly requests it.
 

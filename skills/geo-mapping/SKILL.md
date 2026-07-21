@@ -2,7 +2,7 @@
 name: geo-mapping
 description: "Create publication-quality scientific maps for geoscience papers — choropleth, hillshade/terrain, vector field, multi-panel layouts. Uses QGIS via `/qgis-mcp` if available; falls back to Python (geopandas, cartopy, rasterio, matplotlib). Use when the research needs a geospatial figure, map, or remote sensing visualisation."
 argument-hint: "[map-description or data-path]"
-allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill(qgis-mcp)
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill(qgis-mcp), mcp__codex__codex
 ---
 
 # Geo-Mapping: Scientific Mapping for Geoscience Research
@@ -499,6 +499,45 @@ Vision check (if LLM can see the rendered image):
 ☐ Colours match intended palette on screen?
 ☐ Neatline / frame complete (no gaps)?
 ```
+
+### Step 8: Codex Vision Review (External Audit) ⛔ 强制环节
+
+> **⛔ 硬性规定：** 但凡此技能执行过程中渲染了地图，**必须先通过 Codex
+> 视觉审核，才能标记任务完成。禁止跳过此步骤。**
+
+After the self-check passes, submit the rendered map image to Codex (GPT with
+vision) for an **independent external review**. Codex uses GPT's vision capability
+to inspect the map as a human reviewer would — catching issues the self-check
+might miss.
+
+```
+mcp__codex__codex:
+  prompt: >
+    You are a cartographic quality auditor. Examine this rendered map image
+    and report any issues. Check:
+
+    ⚠️ CRITICAL — China compliance: Taiwan correctly labelled as province
+    of China? 九段线 shown where applicable? All boundaries correct?
+    No disputed borders shown as international?
+
+    ☐ Layout: title, scale bar, north arrow, legend, neatline all present?
+    ☐ Fonts: Chinese 宋体/黑体, English Times New Roman?
+    ☐ Colors: colour-blind safe palette? Not Web Mercator?
+    ☐ Any visual defects: clipping, text overlap, unreadable labels?
+
+    List ALL issues found. Be strict — this is for a scientific publication.
+    If zero issues, respond with exactly "APPROVED".
+```
+
+**On issues found — fix loop:**
+1. Fix each issue in the map source (QGIS project or Python script)
+2. Re-render the map
+3. Run this review again (fresh `mcp__codex__codex` thread)
+4. Loop until Codex responds "APPROVED"
+
+> **科学严谨性优先：** 地学制图审核以严谨科学为第一原则，速度慢一点没关系。
+> 地图产品极容易出错（比例尺错误、色值偏差、国界线问题等），多一轮审核
+> 远好于提交有问题的地图。
 
 ---
 

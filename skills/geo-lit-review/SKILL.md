@@ -125,12 +125,15 @@ Deliver a structured literature review with:
 2. Key themes and trends identified
 3. Gaps or controversies in the literature
 4. Most relevant papers for the research question (with full citations)
+5. **审查状态：** 数据源审查 [通过/不适用]、中国合规审查 [通过/不适用]、
+   结果审查 [通过/不适用] — **必须注明**
 
 ---
 
-## ⚠️ 审查与关键检查 (Review & Critical Checks)
+## ⚠️ 审查与关键检查 (Review & Critical Checks) ⛔ 强制环节
 
-**在输出任何文献综述结果前，必须执行以下审查。所有地学任务必须重视审查环节。**
+> **⛔ 硬性规定：** 在输出任何文献综述结果前，**必须先完成以下全部审查并确认通过，
+> 否则不得交付结果。禁止跳过审查环节。**
 
 ### ⚡ 数据源黄金规则 (Golden Rule — Do NOT Fabricate Data)
 
