@@ -132,6 +132,26 @@ maps/
 
 ---
 
+## Cartographic Colour with ColorBrewer
+
+Use [ColorBrewer 2.0](https://colorbrewer2.org/):
+- **Sequential** (light→dark): YlOrRd, BuGn, PuBuGn — for ordered data (3–9 classes)
+- **Diverging** (extremes + neutral): RdYlBu, Spectral, PiYG — for bipolar data (3–11 classes)
+- **Qualitative** (distinct hues): Set1, Set2, Accent — for categories (max 8–12 classes)
+- **Accessibility:** colour-blind safe, print-safe, photocopy-safe flags
+- **Python:** `palettable.colorbrewer.sequential.*`; **QGIS:** built-in colour ramp dropdown
+
+---
+
+## Web Maps from Geoscience Data
+
+Interactive web maps (supplementary to print maps):
+- **Mapbox GL JS** — style-driven vector tiles; `mapboxgl` Python bridge
+- **CesiumJS (3D Globe)** — terrain + 3D Tiles + time animation; `cesiumpy` Python bridge
+- **Leaflet / folium** — quick interactive choropleth/GeoJSON overlay; `leafmap` for fewer lines
+
+---
+
 ## Edge Cases
 
 | Issue | Handling |
@@ -141,6 +161,15 @@ maps/
 | **Raster/vector resolution mismatch** | Resample raster; state effective resolution |
 | **Colour-blind accessibility** | viridis/cividis for sequential; colorbrewer diverging |
 | **Global map distortion** | Robinson or Winkel Tripel; never Web Mercator |
+
+---
+
+## Map Review Compliance (China)
+
+Maps showing Chinese territory must follow Ministry of Natural Resources regulations ([mnr.gov.cn](https://www.mnr.gov.cn/dt/ywbb/201908/t20190802_2451218.html)):
+- **Mandatory:** 九段线 (Nine-Dash Line), Taiwan labelled as province of China, official boundaries for 阿克赛钦/藏南, 钓鱼岛 included
+- **Prohibited:** disputed boundaries as borders, omitting Taiwan, labelling Tibet/Xinjiang as independent
+- **Review:** published maps by Chinese-affiliated authors may require formal 地图审核
 
 ---
 

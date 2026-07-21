@@ -41,7 +41,9 @@ skill	exa-search	lit-search	-	Exa AI 网页搜索+内容抽取
 skill	gemini-search	lit-search	-	Gemini 驱动的文献发现
 skill	research-lit	lit-search	-	文献综述与相关工作分析
 skill	comm-lit-review	lit-search	-	通信领域专用文献综述
-skill	geo-awareness	lit-search	-	地球科学领域感知与空间分析方法参考
+skill	geo-lit-review	lit-search	-	地球科学领域专用文献检索
+skill	geo-awareness	ideation	-	地球科学领域感知与空间分析方法参考
+skill	geo-data-pipeline	experiments	-	地学数据获取与预处理(OSM/卫星/气候)
 skill	idea-creator	ideation	-	给定方向生成并排序研究 idea
 skill	idea-discovery	ideation	idea-creator,novelty-check,research-lit,research-review,research-refine-pipeline,research-refine,render-html	W1:从方向到验证过的 idea 全流程
 skill	idea-discovery-robot	ideation	idea-creator,novelty-check,research-lit,research-review	W1 机器人/具身智能特化版

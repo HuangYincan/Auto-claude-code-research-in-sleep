@@ -209,6 +209,20 @@ Key: bandwidth selection via AICc/CV, local collinearity check, adaptive vs fixe
 | **Vision Transformer** | Scene / object classification | Large labelled datasets |
 | **Siamese change detection** | Multi-temporal pixel change | Deforestation, urban expansion |
 
+### 4.7 Spatial Cross-Validation for Geospatial ML
+
+Standard random split assumes independent samples — violated by spatial autocorrelation (Tobler's Law). This is one of the most common errors in geospatial ML.
+
+| Technique | Description |
+|---|---|
+| **Spatial Block CV** | Grid blocks as folds |
+| **Buffered CV** | Exclude buffer around training samples from test set |
+| **Cluster-based CV** | k-means of coordinates → folds |
+| **Leave-One-Region-Out** | Hold out entire provinces/catchments |
+| **Checkerboard split** | Alternating grid cells |
+
+**Rule:** If the data has coordinates AND the target shows spatial autocorrelation (Moran's I > 0), random split **will overestimate performance**. Use spatial CV.
+
 ## 5. Workflow Guidance
 
 ### Step 1: Problem Localisation
