@@ -1,6 +1,6 @@
 # QGIS-MCP 集成指南
 
-[QGIS-MCP](https://github.com/jjsantos01/qgis_mcp) 通过模型上下文协议（MCP）将 **QGIS Desktop**（开源 GIS 桌面应用）与 Claude Code 连接起来。它让大语言模型能够驱动地理空间分析：加载 GIS 数据、运行处理算法、渲染地图和执行 PyQGIS 代码——全部在研究流水线中完成。
+[QGIS-MCP](https://github.com/nkarasiak/qgis-mcp) 通过模型上下文协议（MCP）将 **QGIS Desktop**（开源 GIS 桌面应用）与 Claude Code 连接起来。它让大语言模型能够驱动地理空间分析：加载 GIS 数据、运行处理算法、渲染地图和执行 PyQGIS 代码——全部在研究流水线中完成。
 
 ## 架构
 
@@ -8,35 +8,53 @@
 Claude Code（MCP 主机）
      ↕ stdio（JSON-RPC，通过 FastMCP）
 mcp-servers/qgis/server.py     ← ARIS 自带的 MCP 服务器
-     ↕ TCP socket（localhost:9876）
-QGIS MCP 插件（QGIS 内部）    ← 单独安装
+     ↕ TCP socket（localhost:9876，长度前缀帧协议）
+QGIS MCP 插件（QGIS 内部）    ← 单独安装（nkarasiak/qgis-mcp）
      ↕ PyQGIS API
 QGIS Desktop
 ```
 
-**QGIS 插件**（来自 qgis_mcp 仓库）在 QGIS 内部运行，启动一个 socket 服务器。**ARIS MCP 服务器**（`mcp-servers/qgis/server.py`）连接到该 socket，将 MCP 工具调用转换成 QGIS 命令。
+**QGIS 插件**（来自 [nkarasiak/qgis-mcp](https://github.com/nkarasiak/qgis-mcp) 仓库）在 QGIS 内部运行，启动一个 socket 服务器。**ARIS MCP 服务器**（`mcp-servers/qgis/server.py`）连接到该 socket，将 MCP 工具调用转换成 QGIS 命令。
 
 ## 前提条件
 
-1. **QGIS Desktop** 3.x — [下载地址](https://qgis.org/download/)
-2. **Python 3.12+** 和 **uv**（macOS 上执行 `brew install uv`）
-3. **QGIS MCP 插件** — 见下方[安装步骤](#安装)
+1. **uv** — MCP 注册命令需要：
+   ```bash
+   brew install uv          # macOS
+   curl -LsSf https://astral.sh/uv/install.sh | sh   # 其他平台
+   ```
+
+2. **QGIS Desktop 3.x** — [下载地址](https://qgis.org/download/)
+
+3. **Python 3.12+** — QGIS 自带或系统安装
 
 ## 安装
 
 ### 1. 安装 QGIS 插件
 
-克隆 QGIS-MCP 仓库，将插件软链接到你的 QGIS 配置目录：
+[nkarasiak/qgis-mcp](https://github.com/nkarasiak/qgis-mcp) 仓库同时提供 QGIS 插件和规范的 MCP 服务器。我们只需要把插件装进 QGIS。
 
+**选项 A — 自动安装（推荐）：**
 ```bash
-git clone git@github.com:jjsantos01/qgis_mcp.git /path/to/qgis_mcp
+git clone https://github.com/nkarasiak/qgis-mcp.git /path/to/qgis-mcp
+cd /path/to/qgis-mcp
+python install.py            # 自动创建插件软链接 + 配置客户端
+```
+
+**选项 B — 手动创建软链接：**
+```bash
+git clone https://github.com/nkarasiak/qgis-mcp.git /path/to/qgis-mcp
 
 # macOS
-ln -s /path/to/qgis_mcp/qgis_mcp_plugin \
+ln -s /path/to/qgis-mcp/qgis_mcp_plugin \
   ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins/qgis_mcp
 
-# Windows PowerShell
-# New-Item -ItemType SymbolicLink -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qgis_mcp" -Target "C:\path\to\qgis_mcp\qgis_mcp_plugin"
+# Linux
+ln -s /path/to/qgis-mcp/qgis_mcp_plugin \
+  ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/qgis_mcp
+
+# Windows PowerShell（无需管理员权限）
+# New-Item -ItemType Junction -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qgis_mcp" -Target "C:\path\to\qgis-mcp\qgis_mcp_plugin"
 ```
 
 重启 QGIS，然后通过 **插件 → 管理并安装插件 → QGIS MCP** 启用该插件。
@@ -47,22 +65,35 @@ ln -s /path/to/qgis_mcp/qgis_mcp_plugin \
 
 ### 3. 向 Claude Code 注册 MCP 服务器
 
-将 QGIS MCP 服务器注册到 Claude Code，这样技能（如 `/qgis-mcp`）就能使用其工具：
+提供两种注册方式：
 
+**选项 A — 本地服务器（15 个核心工具）：**
+使用 ARIS 自带的 `mcp-servers/qgis/` 服务器：
 ```bash
 claude mcp add qgis -s project -- \
   uv --directory /path/to/aris/mcp-servers/qgis run server.py
 ```
+执行该命令时，`uv` 会自动创建隔离的虚拟环境（在 uv 缓存或 `mcp-servers/qgis/.venv` 中），安装 `mcp` SDK，然后启动服务器。
 
-将 `/path/to/aris` 替换为 ARIS 仓库的绝对路径（例如 `~/aris_repo`）。
+**选项 B — 远程/上游（102 个工具，更简单）：**
+直接从 GitHub 拉取规范的服务器，无需本地代码：
+```bash
+claude mcp add qgis -s project -- \
+  uvx --from https://github.com/nkarasiak/qgis-mcp/archive/refs/heads/main.zip \
+  qgis-mcp-server
+```
 
-> **注意：** 运行此命令前，你必须先安装 QGIS 插件并在 QGIS 中启动服务器（见上方[步骤 1](#1-安装-qgis-插件)和[步骤 2](#2-在-qgis-中启动服务器)）。
+> **注意：** 两种方式都要求 QGIS 正在运行且插件服务器已启动。选项 B 设置更简单，提供上游全部 102 个工具，但依赖 GitHub 仓库的可访问性。
 
 ### 4. 验证
 
 在 Claude Code 中输入 `/qgis-mcp` 并执行 `ping`。如果 QGIS 正在运行且插件服务器已启动，你应该会看到成功的响应。
 
-## 暴露的工具
+```bash
+claude mcp list | grep qgis
+```
+
+## 暴露的工具（本地服务器 — 15 个）
 
 | 工具 | 功能 |
 |---|---|
@@ -81,6 +112,8 @@ claude mcp add qgis -s project -- \
 | `save_project` | 保存当前项目 |
 | `render_map` | 将画布渲染为 PNG 图像 |
 | `execute_code` | 执行任意 PyQGIS 代码（⚠ 谨慎使用） |
+
+**远程/上游路径** 提供 102 个工具，包括图层样式、图集导出、3D 视图、打印布局构造、SQL 查询等。
 
 ## 在研究流水线中的使用
 
@@ -101,16 +134,18 @@ claude mcp add qgis -s project -- \
 
 | 症状 | 检查 |
 |---|---|
+| `uv: command not found` | 安装 uv：`brew install uv` 或 `curl -LsSf https://astral.sh/uv/install.sh | sh` |
+| `mcp module not found` | uv 未能解析依赖——检查 `mcp-servers/qgis/` 下是否存在 `pyproject.toml` |
 | `Could not connect to QGIS` | QGIS 是否正在运行？插件服务器是否已启动？ |
 | `Connection refused` | 端口不匹配——插件和服务器的默认端口都是 9876 |
 | 工具返回空数据 | 是否已加载项目？QGIS 中的图层是否可见？ |
-| `uv` 未找到 | 安装 uv：`brew install uv` 或 `curl -LsSf https://astral.sh/uv/install.sh | sh` |
 
 ## 相关文件
 
 | 路径 | 用途 |
 |---|---|
-| `mcp-servers/qgis/server.py` | MCP 服务器（stdio 传输，socket 客户端） |
-| `mcp-servers/qgis/requirements.txt` | Python 依赖 |
+| `mcp-servers/qgis/server.py` | ARIS 自带的 MCP 服务器（FastMCP，TCP socket 客户端） |
+| `mcp-servers/qgis/pyproject.toml` | Python 项目配置（uv 包，`mcp[cli]` 依赖） |
+| `mcp-servers/qgis/README.md` | 服务器设置指南 |
 | `skills/qgis-mcp/SKILL.md` | ARIS 的 QGIS 工作流技能 |
 | `.env`（项目根目录） | `QGIS_MCP_HOST`、`QGIS_MCP_PORT` |
